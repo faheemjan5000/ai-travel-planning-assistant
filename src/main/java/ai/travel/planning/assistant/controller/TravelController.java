@@ -2,6 +2,8 @@ package ai.travel.planning.assistant.controller;
 
 
 
+import ai.travel.planning.assistant.dto.TravelRequest;
+import ai.travel.planning.assistant.model.TravelPlan;
 import ai.travel.planning.assistant.service.TravelService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,20 +18,16 @@ public class TravelController {
         this.travelService = travelService;
     }
 
-    @GetMapping("/plan")
-    public String generateTravelPlan(
-            @RequestParam String travelerName,
-            @RequestParam String destination,
-            @RequestParam String numberOfDays,
-            @RequestParam String budget,
-            @RequestParam String preferences) {
+    @PostMapping("/plan")
+    public TravelPlan generateTravelPlan(
+            @RequestBody TravelRequest request) {
 
         return travelService.generateTravelPlan(
-                travelerName,
-                destination,
-                numberOfDays,
-                budget,
-                preferences
+                request.getTravelerName(),
+                request.getDestination(),
+                request.getNumberOfDays(),
+                request.getBudget(),
+                request.getPreferences()
         );
     }
 }
