@@ -1,8 +1,10 @@
 package ai.travel.planning.assistant.service;
 
+import ai.travel.planning.assistant.advisors.AuditTokenUsageAdvisor;
 import ai.travel.planning.assistant.model.TravelPlan;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -43,7 +45,8 @@ public class TravelService {
 
              TravelPlan travelPlan = chatClient.prompt()
                 .system(systemPrompt)
-                     .advisors(List.of(new SimpleLoggerAdvisor()))
+                     //.advisors(List.of(new SimpleLoggerAdvisor())) built in advisor
+                     .advisors(new AuditTokenUsageAdvisor()) //custom advisor
                 .user(promptTemplate -> promptTemplate
                         .text(userPrompt)
                         .param("travelerName", travelerName)
@@ -56,7 +59,7 @@ public class TravelService {
                 .call()
 
                 .entity(converter);
-        //log.info("Generated travel plan: {}", travelPlan);
+        log.info("Generated travel plan: {}", travelPlan);
         return travelPlan;
     }
 }
