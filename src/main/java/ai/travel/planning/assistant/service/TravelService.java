@@ -1,6 +1,7 @@
 package ai.travel.planning.assistant.service;
 
 import ai.travel.planning.assistant.advisors.AuditTokenUsageAdvisor;
+import ai.travel.planning.assistant.dto.TravelRequest;
 import ai.travel.planning.assistant.model.TravelPlan;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -33,11 +34,7 @@ public class TravelService {
     }
 
     public TravelPlan generateTravelPlan(
-            String travelerName,
-            String destination,
-            String numberOfDays,
-            String budget,
-            String preferences) {
+            TravelRequest travelRequest) {
             //log.info("Generating travel plan for traveler: {}, destination: {}, number of days: {}, budget: {}, preferences: {}", travelerName, destination, numberOfDays, budget, preferences);
             BeanOutputConverter<TravelPlan> converter =
                 new BeanOutputConverter<>(TravelPlan.class);
@@ -49,11 +46,11 @@ public class TravelService {
                      .advisors(new AuditTokenUsageAdvisor()) //custom advisor
                 .user(promptTemplate -> promptTemplate
                         .text(userPrompt)
-                        .param("travelerName", travelerName)
-                        .param("destination", destination)
-                        .param("numberOfDays", numberOfDays)
-                        .param("budget", budget)
-                        .param("preferences", preferences)
+                        .param("travelerName", travelRequest.getTravelerName())
+                        .param("destination", travelRequest.getDestination())
+                        .param("numberOfDays", travelRequest.getNumberOfDays())
+                        .param("budget", travelRequest.getBudget())
+                        .param("preferences", travelRequest.getPreferences())
                         .param("format", converter.getFormat()))
 
                 .call()

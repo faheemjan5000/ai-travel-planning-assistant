@@ -19,15 +19,8 @@ public class TravelController {
     }
 
     @PostMapping("/plan")
-    public TravelPlan generateTravelPlan(
-            @RequestBody TravelRequest request) {
+    public TravelPlan generateTravelPlan(@RequestBody TravelRequest travelRequest) {
 
-        return travelService.generateTravelPlan(
-                request.getTravelerName(),
-                request.getDestination(),
-                request.getNumberOfDays(),
-                request.getBudget(),
-                request.getPreferences()
-        );
+        return travelService.generateTravelPlan(travelRequest);
     }
 }
